@@ -4,17 +4,20 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.youtube.spaceinvaders.camera.OrthoCamera;
 import com.youtube.spaceinvaders.screen.GameScreen;
 import com.youtube.spaceinvaders.screen.ScreenManager;
 
 public class MainGame implements ApplicationListener {
 	public static int WIDTH = 480, HEIGHT = 800;
 	private SpriteBatch batch;
+	private OrthoCamera camera;
 
 	@Override
 	public void create() {
-
+		
 		batch = new SpriteBatch();
+		camera = new OrthoCamera();
 		ScreenManager.setScreen(new GameScreen());
 
 	}
@@ -43,7 +46,7 @@ public class MainGame implements ApplicationListener {
 	@Override
 	public void resize(int width, int height) {
 		if (ScreenManager.getCurrentScreen() != null)
-			ScreenManager.getCurrentScreen().resize(width, height);
+			ScreenManager.getCurrentScreen().resize((int)camera.viewportWidth, (int)camera.viewportHeight);
 	}
 
 	@Override
