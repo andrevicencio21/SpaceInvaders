@@ -19,11 +19,13 @@ import com.haki.one.Game;
 import com.haki.one.handlers.B2DVariables;
 import com.haki.one.handlers.GameStateManager;
 import com.haki.one.handlers.MyContactListener;
+import com.haki.one.handlers.MyInput;
 
 public class Play extends GameState {
 	private World world;
 	private Box2DDebugRenderer debugRender;
 	private OrthographicCamera b2dCamera;
+	private Body playerBody;
 
 	public Play(GameStateManager gsm) {
 
@@ -48,44 +50,27 @@ public class Play extends GameState {
 		FixtureDef fdef = new FixtureDef(); // Fixture Def
 		fdef.shape = shape;
 		fdef.filter.categoryBits = B2DVariables.BIT_GROUND;
-		fdef.filter.maskBits = B2DVariables.BIT_BOX | B2DVariables.BIT_BALL;
+		fdef.filter.maskBits = B2DVariables.BIT_PLAYER;
 		Fixture fixture = body.createFixture(fdef);
 		fixture.setUserData("ground");
 
-		// create falling box
+		// create PLAYER
 		bdef.position.set(160 / PPM, 200 / PPM);
 		bdef.type = BodyType.DynamicBody;
-		body = world.createBody(bdef);
+		playerBody = world.createBody(bdef);
 		shape.setAsBox(5 / PPM, 5 / PPM);
 		fdef.shape = shape;
-		fdef.filter.categoryBits = B2DVariables.BIT_BOX;
-		fdef.filter.maskBits = B2DVariables.BIT_GROUND | B2DVariables.BIT_BALL;
-		body.createFixture(fdef).setUserData("box");
+		fdef.filter.categoryBits = B2DVariables.BIT_PLAYER;
+		fdef.filter.maskBits = B2DVariables.BIT_GROUND;
+		playerBody.createFixture(fdef).setUserData("player");
+		//create foot sensor
+		shape.setAsBox(2 /PPM, 2 /PPM, new Vector2(0, -5/PPM), 0);
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVariables.BIT_PLAYER;
+		fdef.filter.maskBits = B2DVariables.BIT_GROUND;
+		fdef.isSensor = true;
+		playerBody.createFixture(fdef).setUserData("playerFoot");
 
-		// create ball
-		bdef.position.set(153 / PPM, 220 / PPM);
-		body = world.createBody(bdef);
-		CircleShape cshape = new CircleShape();
-		cshape.setRadius(5 / PPM);
-		fdef.shape = cshape;
-		fdef.filter.categoryBits = B2DVariables.BIT_BALL;
-		fdef.filter.maskBits = B2DVariables.BIT_GROUND | B2DVariables.BIT_BOX
-				| B2DVariables.BIT_BALL;
-		body.createFixture(fdef).setUserData("ball");;
-
-		// BALL FUN
-		/*
-		 * for (int i = 0; i < 300; i++) {
-		 * bdef.position.set(MathUtils.random(5/PPM, 200/PPM), 50/PPM); body =
-		 * world.createBody(bdef); cshape.setRadius(2 / PPM); fdef.shape =
-		 * cshape; fdef.restitution = MathUtils.random(0.90f, 0.98f);
-		 * fdef.density = MathUtils.random(0.90f, 0.98f);
-		 * fdef.filter.categoryBits = B2DVariables.BIT_BALL;
-		 * fdef.filter.maskBits = B2DVariables.BIT_GROUND | B2DVariables.BIT_BOX
-		 * | B2DVariables.BIT_BALL; body.createFixture(fdef); }
-		 */
-
-		// setup b2d cam
 		b2dCamera = new OrthographicCamera();
 		b2dCamera.setToOrtho(false, Game.V_WIDTH / PPM, Game.V_HEIGHT / PPM);
 
@@ -98,6 +83,7 @@ public class Play extends GameState {
 
 	@Override
 	public void update(float dt) {
+		handleInput();
 		world.step(dt, 6, 2);
 
 	}

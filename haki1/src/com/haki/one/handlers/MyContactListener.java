@@ -11,9 +11,8 @@ public class MyContactListener implements ContactListener {
 	@Override
 	// when 2 fixtres begin to collide
 	public void beginContact(Contact c) {
-		Fixture fa = c.getFixtureA();
-		Fixture fb = c.getFixtureB();
-		System.out.println("Fixture A is" + fa.getUserData());
+		//Fixture fa = c.getFixtureA();
+		//Fixture fb = c.getFixtureB();
 	}
 
 	@Override

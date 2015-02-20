@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.haki.one.handlers.GameStateManager;
+import com.haki.one.handlers.MyInput;
+import com.haki.one.handlers.MyInputProcessor;
 
 public class Game implements ApplicationListener {
 	private OrthographicCamera camera;
@@ -27,7 +29,7 @@ public class Game implements ApplicationListener {
 
 	public void create() {
 		
-		
+		Gdx.input.setInputProcessor(new MyInputProcessor());
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, V_WIDTH, V_HEIGHT);
 		hudCamera = new OrthographicCamera();
@@ -51,6 +53,7 @@ public class Game implements ApplicationListener {
 			accum -= STEP;
 			gsm.update(STEP);
 			gsm.render();
+			MyInput.update();
 		}
 	
 	}
