@@ -5,19 +5,20 @@ import static com.haki.one.handlers.B2DVariables.PPM;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.haki.one.Game;
 import com.haki.one.handlers.B2DVariables;
 import com.haki.one.handlers.GameStateManager;
+import com.haki.one.handlers.MyContactListener;
 
 public class Play extends GameState {
 	private World world;
@@ -28,6 +29,7 @@ public class Play extends GameState {
 
 		super(gsm);
 		world = new World(new Vector2(0, -9.81f), true);
+		world.setContactListener(new MyContactListener());
 		debugRender = new Box2DDebugRenderer();
 
 		// Create Platform
@@ -47,7 +49,8 @@ public class Play extends GameState {
 		fdef.shape = shape;
 		fdef.filter.categoryBits = B2DVariables.BIT_GROUND;
 		fdef.filter.maskBits = B2DVariables.BIT_BOX | B2DVariables.BIT_BALL;
-		body.createFixture(fdef);
+		Fixture fixture = body.createFixture(fdef);
+		fixture.setUserData("ground");
 
 		// create falling box
 		bdef.position.set(160 / PPM, 200 / PPM);
@@ -57,7 +60,7 @@ public class Play extends GameState {
 		fdef.shape = shape;
 		fdef.filter.categoryBits = B2DVariables.BIT_BOX;
 		fdef.filter.maskBits = B2DVariables.BIT_GROUND | B2DVariables.BIT_BALL;
-		body.createFixture(fdef);
+		body.createFixture(fdef).setUserData("box");
 
 		// create ball
 		bdef.position.set(153 / PPM, 220 / PPM);
@@ -68,7 +71,7 @@ public class Play extends GameState {
 		fdef.filter.categoryBits = B2DVariables.BIT_BALL;
 		fdef.filter.maskBits = B2DVariables.BIT_GROUND | B2DVariables.BIT_BOX
 				| B2DVariables.BIT_BALL;
-		body.createFixture(fdef);
+		body.createFixture(fdef).setUserData("ball");;
 
 		// BALL FUN
 		/*
