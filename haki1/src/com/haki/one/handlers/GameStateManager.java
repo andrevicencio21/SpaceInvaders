@@ -2,9 +2,9 @@ package com.haki.one.handlers;
 
 import java.util.Stack;
 
-import com.haki.one.Game;
 import com.haki.one.gamestates.GameState;
 import com.haki.one.gamestates.Play;
+import com.haki.one.main.Game;
 
 public class GameStateManager {
 	private Game game;

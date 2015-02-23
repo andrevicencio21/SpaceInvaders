@@ -2,8 +2,8 @@ package com.haki.one.gamestates;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.haki.one.Game;
 import com.haki.one.handlers.GameStateManager;
+import com.haki.one.main.Game;
 
 public abstract class GameState {
 	protected GameStateManager gsm;

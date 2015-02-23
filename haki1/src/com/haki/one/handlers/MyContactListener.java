@@ -1,25 +1,67 @@
 package com.haki.one.handlers;
 
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.utils.Array;
 
 public class MyContactListener implements ContactListener {
+	private int numFootContacts;
+	private Array<Body> bodiesToRemove;
+
+	public MyContactListener() {
+		super();
+		bodiesToRemove = new Array<Body>();
+	}
 
 	@Override
 	// when 2 fixtres begin to collide
 	public void beginContact(Contact c) {
-		//Fixture fa = c.getFixtureA();
-		//Fixture fb = c.getFixtureB();
+		Fixture fa = c.getFixtureA();
+		Fixture fb = c.getFixtureB();
+		if (fa == null || fb == null)
+			return;
+		if (fa.getUserData() != null && fa.getUserData().equals("playerFoot")) {
+			numFootContacts++;
+		}
+		if (fb.getUserData() != null && fb.getUserData().equals("playerFoot")) {
+			numFootContacts++;
+		}
+		if (fa.getUserData() != null && fa.getUserData().equals("crystal")) {
+			// remove crystal
+			bodiesToRemove.add(fa.getBody());
+		}
+		if (fb.getUserData() != null && fb.getUserData().equals("crystal")) {
+			// remove crystal
+			bodiesToRemove.add(fb.getBody());
+		}
 	}
 
 	@Override
 	// when two fixtures no longer collide
 	public void endContact(Contact c) {
-		// TODO Auto-generated method stub
+		Fixture fa = c.getFixtureA();
+		Fixture fb = c.getFixtureB();
+		if (fa == null || fb == null)
+			return;
+		if (fa.getUserData() != null && fa.getUserData().equals("playerFoot")) {
+			numFootContacts--;
+		}
+		if (fb.getUserData() != null && fb.getUserData().equals("playerFoot")) {
+			numFootContacts--;
+		}
 
+	}
+
+	public Array<Body> getBodiesToRemove() {
+		return bodiesToRemove;
+	}
+
+	public boolean isPlayerOnGround() {
+		return numFootContacts > 0;
 	}
 
 	// collision detection
